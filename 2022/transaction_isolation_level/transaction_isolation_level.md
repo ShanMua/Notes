@@ -6,7 +6,7 @@
 
 在读未提交隔离级别中，某一事务A在执行过程中更新了某一数据，但还未提交或者未回滚的情况下，另一事务B能访问到事务A更新后的数据。读取到其他事务未提交的数据称为脏读。
 
-![read_uncommit](read_uncommit.png)
+![read_uncommit](https://raw.githubusercontent.com/ShanMua/Notes/main/2022/transaction_isolation_level/read_uncommit.png)
 
 演示：
 
@@ -63,7 +63,7 @@ select * from t_id;
 
 读已提交和读未提交的区别在于：读已提交只允许访问已提交的数据。读已提交解决了脏读问题，但读已提交还存在不可重复读的问题。
 
-![read_commit](read_commit.png)
+![read_commit](https://raw.githubusercontent.com/ShanMua/Notes/main/2022/transaction_isolation_level/read_commit.png)
 
 演示：
 

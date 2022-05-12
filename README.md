@@ -8,3 +8,7 @@
 
 - [ ] [探秘MySQL之MVCC]() (未完成)
 
+## others
+[资源](https://github.com/ShanMua/Notes/blob/main/others/resource.md) 🌧
+[交流](https://github.com/ShanMua/Notes/blob/main/others/talk.md) 🌧
+[工具](https://github.com/ShanMua/Notes/blob/main/others/tools.md) 🌧

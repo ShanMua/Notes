@@ -4,8 +4,7 @@
 
 InvocationHandler接口
 
-![InvocationHandler](/E:/github/Notes/2022/dynamic_proxy/InvocationHandler.png)
-
+![InvocationHandler](InvocationHandler.png)
 invoke方法
 
 

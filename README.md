@@ -10,5 +10,5 @@
 
 - [ ] [探秘MySQL之MVCC]() (未完成)
 
-- [x] [关于Integer的自动装箱与自动拆箱](https://github.com/ShanMua/Notes/blob/main/2022/automatic_packing_unpacking.md) (已完成)☀️
+- [x] [关于Integer的自动装箱与自动拆箱](https://github.com/ShanMua/Notes/blob/main/2022/automatic_packing_unpacking/automatic_packing_unpacking.md) (已完成)☀️
 

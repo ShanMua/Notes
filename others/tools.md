@@ -4,7 +4,7 @@
 #### 画图工具
 [excalidraw](https://excalidraw.com/)
 
-![](excalidraw.jpg)
+![excalidraw](excalidraw.jpg)
 
 #### others
-    [uTools](https://u.tools/)
+[uTools](https://u.tools/)

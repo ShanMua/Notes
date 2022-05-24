@@ -1,6 +1,6 @@
 import proxy.StudentProxy;
-import service.Person;
-import service.impl.Student;
+import service.PersonService;
+import service.impl.StudentServiceImpl;
 
 import java.lang.reflect.Proxy;
 
@@ -9,8 +9,8 @@ import java.lang.reflect.Proxy;
  */
 public class JdkApplication {
     public static void main(String[] args) {
-        StudentProxy studentProxy = new StudentProxy(new Student("JOJO"));
-        Person student = (Person) Proxy.newProxyInstance(studentProxy.getClass().getClassLoader(), new Class[]{Person.class}, studentProxy);
+        StudentProxy studentProxy = new StudentProxy(new StudentServiceImpl("JOJO"));
+        PersonService student = (PersonService) Proxy.newProxyInstance(studentProxy.getClass().getClassLoader(), new Class[]{PersonService.class}, studentProxy);
         student.sleeping();
         student.working();
     }

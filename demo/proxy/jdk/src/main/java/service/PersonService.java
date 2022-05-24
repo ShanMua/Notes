@@ -1,6 +1,6 @@
 package service;
 
-public interface Person {
+public interface PersonService {
     void sleeping();
 
     void working();

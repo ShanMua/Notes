@@ -1,14 +1,14 @@
-package service.impl;
+package service;
 
-import service.Person;
+import lombok.Data;
 
-public class Student implements Person {
+/**
+ * 基于CGLIB实现动态代理，该被代理类不需要实现接口
+ */
+@Data
+public class StudentService {
 
     private String name;
-
-    public Student(String name) {
-        this.name = name;
-    }
 
     public void sleeping() {
         System.out.println(this.name + "正在睡觉~");

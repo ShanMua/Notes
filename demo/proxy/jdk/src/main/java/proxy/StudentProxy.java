@@ -1,15 +1,15 @@
 package proxy;
 
-import service.impl.Student;
+import service.impl.StudentServiceImpl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 public class StudentProxy implements InvocationHandler {
 
-    private Student student;
+    private StudentServiceImpl student;
 
-    public StudentProxy(Student student){
+    public StudentProxy(StudentServiceImpl student){
         this.student = student;
     }
 

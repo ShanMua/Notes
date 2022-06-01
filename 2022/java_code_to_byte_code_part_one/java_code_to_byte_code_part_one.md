@@ -275,7 +275,7 @@ putfield
 
 在内存中，当执行此命令时，会发生以下情况:
 
-![java_class_variable_creation_byte_code](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_class_variable_creation_byte_code.png)
+![](java_class_variable_creation_byte_code.png)
 
 The putfield opcode has a single operand that referencing the second position in the constant pool. The JVM maintains a per-type constant pool, a run time data structure that is similar to a symbol table although it contains more data. Byte codes in Java require data, often this data is too large to store directly in the byte codes, instead it is stored in the constant pool and the byte code contains a reference to the constant pool. When a class file is created it has a section for the constant pool as follows:
 
@@ -399,7 +399,7 @@ First the two parameters are loaded onto the operand stack using iload_1 and ilo
 
 首先，使用iload_1和iload_2将两个参数加载到操作数堆栈上。if_icmple然后比较操作数堆栈上的前两个值。如果intOne小于或等于intTwo，则该操作数分支到字节码7。注意，这与Java代码中的if条件中的测试完全相反，因为如果字节码测试成功，则执行分支到else-块，而在Java代码中，如果测试成功，则执行进入if-块。换句话说，if_icmple正在测试if条件是否为真并跳过if块。if-block的主体是字节码5和6,else-block的主体是字节码7和8。
 
-![java_if_else_byte_code](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_if_else_byte_code.png)
+![java_if_else_byte_code](java_if_else_byte_code.png)
 
 The following code example shows a slightly more complex example which requires a two-step comparison.
 
@@ -452,7 +452,7 @@ This example is also different from the previous example in that there is only a
 
 这个示例与上一个示例的不同之处在于，方法末尾只有一条return语句，因此if-block末尾需要goto语句，以防止else-block也被执行。goto分支到字节码13，然后使用iload_3将存储在第三个局部变量槽中的结果推到操作数堆栈的顶部，以便它可以由返回指令返回。
 
-![java_if_else_byte_code_extra_goto](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_if_else_byte_code_extra_goto.png)
+![java_if_else_byte_code_extra_goto](java_if_else_byte_code_extra_goto.png)
 
 As well as comparing numeric values there are comparison opcodes for reference equality i.e. ==, for comparison to null i.e. == null and != null and for testing an object's type i.e. instanceof.
 
@@ -568,7 +568,7 @@ This produces the following byte code:
 
 The tableswitch instruction has values for 0, 1 and 4 to match the case statement provided in the code which each point to the byte code for their prospective code block. The tableswitch instruction also has values for 2 and 3, as these are not provided as case statements in the Java code they both point to the default code block. When the instruction is executed the value at the top of the operand stack is checked to see if it is between the minimum and maximum. If the value is not between the minimum and maximum execution jumps to the default branch, which is byte code 42 in the above example. To ensure the default branch value can be found in the tableswitch instruction it is always the first byte (after any required padding for alignment). If the value is between the minimum and maximum it is used to index into the tableswitch and find the correct byte code to branch to, for example for value 1 above the execution would branch to byte code 38. The following diagram shows how this byte code would be executed:
 
-![java_switch_tableswitch_byte_code](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_switch_tableswitch_byte_code.png)
+![java_switch_tableswitch_byte_code](java_switch_tableswitch_byte_code.png)
 
 If the values in the case statement were too far apart (i.e. too sparse) this approach would not be sensible, as it would take too much memory. Instead when the cases of the switch are sparse a lookupswitch instruction is used. A lookupswitch instruction lists the byte code to branch to for each case statement but it does not list all possible values. When executing the lookupswitch the value at the top of the operand stack is compared against each value in the lookupswitch to determine the correct branch address. With a lookupswitch the JVM therefore searches (looks up) the correct match in a list of matches this is a slower operation then for the tableswitch where the JVM just indexes the correct value immediately. When a select statement is compiled the compiler must trade off memory efficiency with performance to decide which opcode to use for the select statement. For the following code the compiler produces a lookupswitch:
 
@@ -610,7 +610,7 @@ This produces the following byte code:
 
 To ensure efficient search algorithms (more efficient then linear search) the number of matches is provided and the matches are sorted. The following diagram shows how this would be executed:
 
-![java_switch_lookupswitch_byte_code](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_switch_lookupswitch_byte_code.png)
+![java_switch_lookupswitch_byte_code](java_switch_lookupswitch_byte_code.png)
 
 ### String switch
 
@@ -713,7 +713,7 @@ Constant pool:
 
 Notice the amount of byte code required to perform this switch including two tableswitch instructions and several invokevirtual instructions used to call String.equal(). See the section on method invocation in the next article for more detail on invokevirtual. The following diagram shows how this would be executed for the input “b”.
 
-![java_string_switch_byte_code_1](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_string_switch_byte_code_1.png)![java_string_switch_byte_code_2](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_string_switch_byte_code_2.png)![java_string_switch_byte_code_3](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_string_switch_byte_code_3.png)
+![java_string_switch_byte_code_1](java_string_switch_byte_code_1.png)![java_string_switch_byte_code_2](java_string_switch_byte_code_2.png)![java_string_switch_byte_code_3](java_string_switch_byte_code_3.png)
 
 If the hashcode values for the different cases matched, such as for the strings “FB” and “Ea” which both have a hashcode of 28. This is handled by slightly altering the flow of equals methods as below. Notice how byte code 34: ifeg *42* goes to another invocation of String.equals() instead of the lookupswitch opcode as in the previous example which had no colliding hashcode values.
 
@@ -808,9 +808,9 @@ Is compiled to:
 
 The if_icmpge instruction tests if the local variable in position 1 (i.e. i) is equal or greater then 10 if it is then the instruction jumps to byte code 14 finishing the loop. The goto instruction keeps the byte code looping until the if_icmpge condition is met at which point the execution branches to the return instruction immediately after the end of the loop. The iinc instruction is one of the few instruction that updates a local variable directly without having to load or store values in the operand stack. In this example the iinc instruction increases the first local variable (i.e. i) by 1.
 
-![java_while_loop_byte_code_1](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_while_loop_byte_code_1.png)
+![java_while_loop_byte_code_1](java_while_loop_byte_code_1.png)
 
-![java_while_loop_byte_code_2](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_while_loop_byte_code_2.png)
+![java_while_loop_byte_code_2](java_while_loop_byte_code_2.png)
 
 ### for-loop
 
@@ -849,9 +849,9 @@ Results in the following byte code:
 10: return
 ```
 
-![java_do_while_loop_byte_code_1](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_do_while_loop_byte_code_1.png)
+![java_do_while_loop_byte_code_1](java_do_while_loop_byte_code_1.png)
 
-![java_do_while_loop_byte_code_2](D:\AA-private\Project\Notes\2022\java_code_to_byte_code_part_one\java_do_while_loop_byte_code_2.png)
+![java_do_while_loop_byte_code_2](java_do_while_loop_byte_code_2.png)
 
 ### More Articles
 

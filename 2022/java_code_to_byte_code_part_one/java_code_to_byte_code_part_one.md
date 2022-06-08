@@ -525,7 +525,9 @@ All these operands compare the top value in the operand stack with zero and bran
 
 ### switch
 
-The type of a Java switch expression must be char, byte, short, int, Character, Byte, Short, Integer, String or an enum type. To support switch statements the JVM uses two special instructions called tableswitch and lookupswitch which both only work with integer values. The use of only integers values is not a problem because char, byte, short and enum types can all be internally promoted to int. Support for String was also added in Java 7 which will be covered below. tableswitch is typically a faster opcode however it also typically takes more memory. tableswitch works by listing all potential case values between the minimum and maximum case values. The minimum and maximum values are also provided so that the JVM can immediately jump to the default-block if the switch variable is not in the range of listed case values. Values for case statement that are not provided in the Java code are also listed, but point to the default-block, to ensure **all** values between the minimum and maximum are provided. For example take the following switch statement:
+The type of a Java switch expression must be char, byte, short, int, Character, Byte, Short, Integer, String or an enum type. To support switch statements the JVM uses two special instructions called tableswitch and lookupswitch which both only work with integer values. The use of only integers values is not a problem because char, byte, short and enum types can all be internally promoted to int. Support for String was also added in Java 7 which will be covered below. tableswitch is typically a faster opcode however it also typically takes more memory. **~~tableswitch works by listing all potential case values between the minimum and maximum case values.~~** The minimum and maximum values are also provided so that the JVM can immediately jump to the default-block if the switch variable is not in the range of listed case values. Values for case statement that are not provided in the Java code are also listed, but point to the default-block, to ensure **all** values between the minimum and maximum are provided. For example take the following switch statement:
+
+Java switch表达式的类型必须是char、byte、short、int、Character、byte、short、Integer、String或enum类型。 为了支持switch语句，JVM使用了两个特殊的指令，称为tableswitch和lookupswitch，它们都只对整数值起作用。 只使用整型值不是问题，因为char、byte、short和enum类型都可以在内部提升为int类型。 Java 7中还添加了对String的支持，下面将介绍。 表女巫通常是一个更快的操作码，但它也通常需要更多的内存。 tablewitch的工作原理是列出最小和最大大小写值之间的所有潜在大小写值。 还提供了最小值和最大值，以便在switch变量不在列出的case值范围内时，JVM可以立即跳转到默认块。 Java代码中没有提供的case语句的值也被列出，但指向默认块，以确保提供了最小值和最大值之间的**小**值。 例如下面的switch语句: 
 
 ```
 public int simpleSwitch(int intOne) {
@@ -543,6 +545,8 @@ public int simpleSwitch(int intOne) {
 ```
 
 This produces the following byte code:
+
+这将产生以下字节码：
 
 ```
  0: iload_1
@@ -568,9 +572,13 @@ This produces the following byte code:
 
 The tableswitch instruction has values for 0, 1 and 4 to match the case statement provided in the code which each point to the byte code for their prospective code block. The tableswitch instruction also has values for 2 and 3, as these are not provided as case statements in the Java code they both point to the default code block. When the instruction is executed the value at the top of the operand stack is checked to see if it is between the minimum and maximum. If the value is not between the minimum and maximum execution jumps to the default branch, which is byte code 42 in the above example. To ensure the default branch value can be found in the tableswitch instruction it is always the first byte (after any required padding for alignment). If the value is between the minimum and maximum it is used to index into the tableswitch and find the correct byte code to branch to, for example for value 1 above the execution would branch to byte code 38. The following diagram shows how this byte code would be executed:
 
+tableswitch指令的值为0、1和4，以匹配代码中提供的case语句，每个点指向其预期代码块的字节码。 表女巫指令也有2和3的值，因为Java代码中没有将它们作为case语句提供，它们都指向默认代码块。 当指令被执行时，将检查操作数堆栈顶部的值，看它是否在最小值和最大值之间。 如果该值不在最小值和最大值之间，则执行跳转到默认分支，该分支在上面的示例中是字节码42。 为了确保可以在tableswitch指令中找到默认的分支值，它总是第一个字节(在对齐所需的填充之后)。 如果该值在最小值和最大值之间，则用于在表中建立索引并查找要分支到的正确字节码，例如，上面的值1将分支到字节码38。 下面的图表显示了这个字节代码将如何执行: 
+
 ![java_switch_tableswitch_byte_code](java_switch_tableswitch_byte_code.png)
 
-If the values in the case statement were too far apart (i.e. too sparse) this approach would not be sensible, as it would take too much memory. Instead when the cases of the switch are sparse a lookupswitch instruction is used. A lookupswitch instruction lists the byte code to branch to for each case statement but it does not list all possible values. When executing the lookupswitch the value at the top of the operand stack is compared against each value in the lookupswitch to determine the correct branch address. With a lookupswitch the JVM therefore searches (looks up) the correct match in a list of matches this is a slower operation then for the tableswitch where the JVM just indexes the correct value immediately. When a select statement is compiled the compiler must trade off memory efficiency with performance to decide which opcode to use for the select statement. For the following code the compiler produces a lookupswitch:
+If the values in the case statement were too far apart (i.e. too sparse) this approach would not be sensible, as it would take too much memory. Instead when the cases of the switch are sparse a lookupswitch instruction is used. A lookupswitch instruction lists the byte code to branch to for each case statement but it does not list all possible values. When executing the lookupswitch the value at the top of the operand stack is compared against each value in the lookupswitch to determine the correct branch address. **~~With a lookupswitch the JVM therefore searches (looks up) the correct match in a list of matches this is a slower operation then for the tableswitch where the JVM just indexes the correct value immediately.~~** When a select statement is compiled the compiler must trade off memory efficiency with performance to decide which opcode to use for the select statement. For the following code the compiler produces a lookupswitch:
+
+如果case语句中的值间隔太远(即太稀疏)，这种方法就不明智了，因为它会占用太多内存。 相反，当开关是稀疏的情况下，使用一个lookupswitch指令。 lookupswitch指令列出了每个case语句要分支到的字节码，但它没有列出所有可能的值。 当执行lookupswitch时，将操作数堆栈顶部的值与lookupswitch中的每个值进行比较，以确定正确的分支地址。 通过lookupswitch, JVM将在匹配列表中搜索(查找)正确的匹配，这是一个较慢的操作，对于表女巫，JVM将立即索引正确的值。 编译select语句时，编译器必须权衡内存效率和性能，以决定为select语句使用哪个操作码。 对于下面的代码，编译器会产生一个lookupswitch: 
 
 ```
 public int simpleSwitch(int intOne) {
@@ -588,6 +596,8 @@ public int simpleSwitch(int intOne) {
 ```
 
 This produces the following byte code:
+
+这将产生以下字节码：
 
 ```
  0: iload_1
@@ -610,11 +620,15 @@ This produces the following byte code:
 
 To ensure efficient search algorithms (more efficient then linear search) the number of matches is provided and the matches are sorted. The following diagram shows how this would be executed:
 
+为了确保有效的搜索算法(比线性搜索更有效)，提供了匹配的数量并对匹配进行排序。 下面的图表显示了这将如何执行: 
+
 ![java_switch_lookupswitch_byte_code](java_switch_lookupswitch_byte_code.png)
 
 ### String switch
 
-In Java 7 the switch statement added support for the String type. Although the existing opcodes for switches only support int no new opcodes where added. Instead a switch for the String type is done in two stages. First there the hashcode is compared between the top of the operand stack and the value for each case statement. This is done using either a lookupswitch or tableswitch (depending on the sparcity of the hashcode values). This causes a branch to byte code that calls String.equals() to perform an exact match. A tableswitch instruction is then used on the result of the String.equals() to branch to the code for the correct case statement.
+In Java 7 the switch statement added support for the String type. **~~Although the existing opcodes for switches only support int no new opcodes where added.~~** Instead a switch for the String type is done in two stages. First there the hashcode is compared between the top of the operand stack and the value for each case statement. This is done using either a lookupswitch or tableswitch (depending on the sparcity of the hashcode values). This causes a branch to byte code that calls String.equals() to perform an exact match. A tableswitch instruction is then used on the result of the String.equals() to branch to the code for the correct case statement.
+
+在Java 7中，switch语句增加了对String类型的支持。 虽然现有的开关操作码只支持int，但添加的地方不支持新的操作码。 相反，String类型的转换分两个阶段完成。 首先，在操作数堆栈的顶部和每个case语句的值之间比较哈希代码。 这可以使用查找开关或表开关(取决于哈希码值的稀疏性)来完成。 这会导致字节代码分支调用String.equals()来执行精确匹配。 然后，在String.equals()的结果上使用一个表切换指令，以分支到正确的case语句的代码。 
 
 ```
 public int simpleSwitch(String stringOne) {
@@ -632,6 +646,8 @@ public int simpleSwitch(String stringOne) {
 ```
 
 This String switch statement will produce the following byte code:
+
+这个String switch语句将产生以下字节码: 
 
 ```
  0: aload_1
@@ -689,6 +705,8 @@ This String switch statement will produce the following byte code:
 
 The class containing this byte code also contains the following constant pool values references by this byte code. See the section on [run time constant pool](https://blog.jamesdbloom.com/JVMInternals.html#constant_pool) in the [JVM Internals](https://blog.jamesdbloom.com/JVMInternals.html) article for more detail about constant pools.
 
+包含此字节码的类还包含此字节码引用的下列常量池值引用。 有关常量池的详细信息，请参阅[JVM Internals](https://blog.jamesdbloom.com/JVMInternals.html)文章中的[运行时常量池](https://blog.jamesdbloom.com/JVMInternals.html#constant_pool)一节。 
+
 ```
 Constant pool:
   #2 = Methodref          #25.#26        //  java/lang/String.hashCode:()I
@@ -713,9 +731,13 @@ Constant pool:
 
 Notice the amount of byte code required to perform this switch including two tableswitch instructions and several invokevirtual instructions used to call String.equal(). See the section on method invocation in the next article for more detail on invokevirtual. The following diagram shows how this would be executed for the input “b”.
 
+注意，执行这个awitch所需的字节码包括两个tableswitch指令和几个用于调用String.equal()的invokvirtual指令。 有关invokvirtual的更多细节，请参阅下一篇文章中关于方法调用的部分。 下图显示了如何对输入“b”执行此操作。
+
 ![java_string_switch_byte_code_1](java_string_switch_byte_code_1.png)![java_string_switch_byte_code_2](java_string_switch_byte_code_2.png)![java_string_switch_byte_code_3](java_string_switch_byte_code_3.png)
 
 If the hashcode values for the different cases matched, such as for the strings “FB” and “Ea” which both have a hashcode of 28. This is handled by slightly altering the flow of equals methods as below. Notice how byte code 34: ifeg *42* goes to another invocation of String.equals() instead of the lookupswitch opcode as in the previous example which had no colliding hashcode values.
+
+如果不同情况的hashcode匹配，例如字符串“FB”和“Ea”，它们的哈希码都是28。 这可以通过如下所示略微修改equals方法流来处理。 请注意字节码34:ifeg *42*如何转到String.equals()的另一个调用，而不是上一个示例中的lookupswitch操作码，该操作码没有冲突的hashcode值。 
 
 ```
 public int simpleSwitch(String stringOne) {
@@ -731,6 +753,8 @@ public int simpleSwitch(String stringOne) {
 ```
 
 This generates the following byte code:
+
+这将产生以下字节码：
 
 ```
  0: aload_1
@@ -780,9 +804,21 @@ Loops including for-loops and while-loops work in a similar way except that they
 
 Some opcodes can compare two integers or two references and then preform a branch in a single instruction. Comparisons between other types such as doubles, longs or floats is a two-step process. First the comparison is performed and 1, 0 or -1 is pushed onto the operand stack. Next a branch is performed based on whether the value on the operand stack is greater, less-than or equal to zero. For more detail on the different types of instructions used for branching [see above](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html#instructions_for_branching).
 
+## 循环
+
+条件流控制，例如if-else语句和switch语句，通过使用比较两个值并分支到另一个字节码的指令来工作。 有关条件句的更多详细信息，请参见[条件句部分](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html#conditionals)。 
+
+包括for-loop和while-loop的循环以类似的方式工作，除了它们通常还包括导致字节代码循环的goto指令。 do-while-循环不需要任何goto指令，因为它们的条件分支位于字节码的末尾。 
+
+有些操作码可以比较两个整数或两个引用，然后在单个指令中执行一个分支。 其他类型(如double、long或float)之间进行比较需要两个步骤。 首先执行比较，将1、0或-1压入操作数堆栈。 接下来，根据操作数堆栈上的值是大于、小于还是等于零来执行分支。 有关分支使用的不同类型指令的更多细节[参见上面](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html#instructions_for_branching)。 
+
 ### while-loop
 
 while-loops consist of a conditional branch instructions such as if_icmpge or if_icmplt ([as described above](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html#instructions_for_branching)) and a goto statement. The conditional instruction branches the execution to the instruction immediately after the loop and therefore terminates the loop if the condition is not met. The final instruction in the loop is a goto that branches the byte code back to the beginning of the loop ensuring the byte code keeps looping until the conditional branch is met, as follows:
+
+### while循环
+
+while-loops由一个条件分支指令(如if_icmpge或if_icmpult([如上所述](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html#instructions_for_branching))和一个goto语句组成。 条件指令将执行分支到循环之后的指令，因此如果不满足条件就终止循环。 循环中的最后一条指令是goto，它将字节代码分支回循环的起点，确保字节代码保持循环，直到满足条件分支，如下所示: 
 
 ```
 public void whileLoop() {
@@ -794,6 +830,8 @@ public void whileLoop() {
 ```
 
 Is compiled to:
+
+编译后字节码为：
 
 ```
  0: iconst_0
@@ -808,6 +846,8 @@ Is compiled to:
 
 The if_icmpge instruction tests if the local variable in position 1 (i.e. i) is equal or greater then 10 if it is then the instruction jumps to byte code 14 finishing the loop. The goto instruction keeps the byte code looping until the if_icmpge condition is met at which point the execution branches to the return instruction immediately after the end of the loop. The iinc instruction is one of the few instruction that updates a local variable directly without having to load or store values in the operand stack. In this example the iinc instruction increases the first local variable (i.e. i) by 1.
 
+if_icmpge指令测试位置1(即i)的局部变量是否等于或大于10，如果是，则指令跳转到字节码14结束循环。goto指令保持字节码循环，直到满足if_icmpge条件，此时执行分支立即在循环结束后转到return指令。iinc指令是少数直接更新局部变量而不需要在操作数堆栈中加载或存储值的指令之一。在这个例子中，iinc指令将第一个局部变量(即i)加1。
+
 ![java_while_loop_byte_code_1](java_while_loop_byte_code_1.png)
 
 ![java_while_loop_byte_code_2](java_while_loop_byte_code_2.png)
@@ -815,6 +855,10 @@ The if_icmpge instruction tests if the local variable in position 1 (i.e. i) is 
 ### for-loop
 
 for-loops and while-loops use an identical pattern in byte code. This is not surprising because all while-loops can be re-written easily as an identical for-loop. The simple while-loop above could for example be re-written as a for-loop that produces the exactly identical byte-code as follows:
+
+### for循环
+
+for循环和while循环在字节码中使用相同的模式。这并不奇怪，因为所有while循环都可以很容易地重写为相同的for循环。例如，上面简单的while循环可以被重写为for循环，生成完全相同的字节码如下:
 
 ```
 public void forLoop() {
@@ -827,6 +871,10 @@ public void forLoop() {
 ### do-while-loop
 
 do-while-loops are also very similar to for-loops and while-loops except that they do not require the goto instruction as the conditional branch is the last instruction and is be used to loop back to the beginning.
+
+### do-while循环
+
+do-while循环和for循环和while循环也非常类似，不同之处在于它们不需要goto指令，因为条件分支是最后一条指令，可以用于返回开始的循环。
 
 ```
 public void doWhileLoop() {
@@ -852,19 +900,3 @@ Results in the following byte code:
 ![java_do_while_loop_byte_code_1](java_do_while_loop_byte_code_1.png)
 
 ![java_do_while_loop_byte_code_2](java_do_while_loop_byte_code_2.png)
-
-### More Articles
-
-The next two articles will cover the following topics:
-
-- Part 2 - Object Orientation And Safety(next article)
-  - try-catch-finally
-  - synchronized
-  - method calls (and parameters)
-  - new (objects and arrays)
-- Part 3 - Metaprogramming(future article)
-  - generics
-  - annotations
-  - reflection
-
-For more detail on the internal architecture in the JVM and different memory areas used during byte code execution see my previous article on [JVM Internals](https://blog.jamesdbloom.com/JVMInternals.html)
